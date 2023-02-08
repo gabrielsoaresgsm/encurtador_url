@@ -50,7 +50,7 @@
           }
         }
       },
-      "/{id}": {
+      "/url/{id}": {
         "get": {
           "description": "Redireciona para o link original",
           "produces": [],

@@ -11,27 +11,30 @@ app.use(express.json());
 const links = [];
 
 app.post('/url', (req, res) => {
+  if (!req.body.link) {
+    res.status(400).json({ error: 'O link é obrigatório' });
+    return;
+  }
   const link = req.body.link;
   const id = shortid.generate();
 
-  links.push({id, link});
+  links.push({ id, link });
 
-  res.status(201).json({id});
+  res.status(201).json({ id, link });
 });
 
-/*
-app.get('/:id', (req, res) => {
+
+app.get('/url/:id', (req, res) => {
   const id = req.params.id;
   const link = links.find(l => l.id === id);
-
+  console.log(link)
   if (!link) {
-    res.status(404).json({error: 'Link não encontrado'});
+    res.status(404).json({ error: 'Link não encontrado' });
   } else {
     res.redirect(link.link);
   }
-});
-*/ 
 
+});
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
