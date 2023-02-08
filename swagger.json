@@ -2,12 +2,17 @@
     "swagger": "2.0",
     "info": {
       "version": "1.0.0",
-      "title": "API de Cadastro de Usuários"
+      "title": "API de encurtador de links"
     },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": [
+      "http"
+    ],
     "paths": {
-      "/users": {
+      "/url": {
         "post": {
-          "summary": "Cadastra um novo usuário",
+          "description": "Encurta um link",
           "consumes": [
             "application/json"
           ],
@@ -16,18 +21,15 @@
           ],
           "parameters": [
             {
+              "name": "link",
               "in": "body",
-              "name": "body",
+              "description": "O link que será encurtado",
               "required": true,
               "schema": {
                 "type": "object",
                 "properties": {
-                  "username": {
+                  "link": {
                     "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
                   }
                 }
               }
@@ -35,43 +37,49 @@
           ],
           "responses": {
             "201": {
-              "description": "Usuário cadastrado com sucesso"
+              "description": "Link encurtado com sucesso",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }
-      }, 
-      "/url": {
-        "post": {
-          "summary": "Cadastro de Link",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
+      },
+      "/{id}": {
+        "get": {
+          "description": "Redireciona para o link original",
+          "produces": [],
           "parameters": [
             {
-              "in": "body",
-              "name": "body",
+              "name": "id",
+              "in": "path",
+              "description": "O id do link encurtado",
               "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "302": {
+              "description": "Redirecionamento para o link original"
+            },
+            "404": {
+              "description": "Link não encontrado",
               "schema": {
                 "type": "object",
                 "properties": {
-                  "url": {
+                  "error": {
                     "type": "string"
                   }
                 }
               }
-            }
-          ],
-          "responses": {
-            "201": {
-              "description": "Url encurtador com sucesso"
             }
           }
         }
       }
     }
-    
-
   }

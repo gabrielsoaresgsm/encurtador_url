@@ -19,6 +19,7 @@ app.post('/url', (req, res) => {
   res.status(201).json({id});
 });
 
+/*
 app.get('/:id', (req, res) => {
   const id = req.params.id;
   const link = links.find(l => l.id === id);
@@ -29,6 +30,8 @@ app.get('/:id', (req, res) => {
     res.redirect(link.link);
   }
 });
+*/ 
+
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
