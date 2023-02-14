@@ -5,7 +5,7 @@ const shortid = require('shortid');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 const links = [];
@@ -20,7 +20,7 @@ app.post('/url', (req, res) => {
 
   links.push({ id, link });
 
-  res.status(201).json({ id, link });
+  res.status(201).json({ link: `http://localhost:3000/url/${id}` });
 });
 
 
@@ -31,7 +31,8 @@ app.get('/url/:id', (req, res) => {
   if (!link) {
     res.status(404).json({ error: 'Link não encontrado' });
   } else {
-    res.redirect(link.link);
+    // res.redirect(link.link);
+    res.status(200).json({link_encurtado: `http://localhost:3000/url/${id}`})
   }
 
 });
