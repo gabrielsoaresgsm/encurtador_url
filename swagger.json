@@ -1,80 +1,218 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "API de encurtador de links"
-    },
-    "host": "localhost:3000",
-    "basePath": "/",
-    "schemes": [
-      "http"
-    ],
-    "paths": {
-      "/url": {
-        "post": {
-          "description": "Encurta um link",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "link",
-              "in": "body",
-              "description": "O link que será encurtado",
-              "required": true,
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Encurtador de Links",
+    "description": "API de encurtador de links",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/url": {
+      "post": {
+        "tags": ["URL"],
+        "summary": "Encurta um link",
+        "description": "Encurta um link e retorna um identificador único.",
+        "requestBody": {
+          "content": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "link": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "O link que deve ser encurtado."
+                  }
+                },
+                "required": ["link"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Link encurtado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "link": {
+                      "type": "string",
+                      "description": "O link encurtado."
+                    }
                   }
                 }
               }
             }
-          ],
-          "responses": {
-            "201": {
-              "description": "Link encurtado com sucesso",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
+          },
+          "400": {
+            "description": "O link é obrigatório.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem de erro."
+                    }
                   }
                 }
               }
             }
           }
         }
-      },
-      "/url/{id}": {
-        "get": {
-          "description": "Redireciona para o link original",
-          "produces": [],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "description": "O id do link encurtado",
-              "required": true,
+      }
+    },
+    "/users/{email}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Obter usuário pelo email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "description": "Email do usuário a ser obtido",
+            "required": true,
+            "schema": {
               "type": "string"
             }
-          ],
-          "responses": {
-            "302": {
-              "description": "Redirecionamento para o link original"
-            },
-            "404": {
-              "description": "Link não encontrado",
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        }
+      }
+    },
+    "/users": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Cadastra um novo usuário",
+        "description": "Cadastra um novo usuário na aplicação.",
+        "requestBody": {
+          "content": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "error": {
-                    "type": "string"
+                  "email": {
+                    "type": "string",
+                    "description": "O e-mail do usuário."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "A senha do usuário."
                   }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário cadastrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de sucesso."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email e senha são obrigatórios.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem de erro."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email já cadastrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Mensagem de erro."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/url/{id}": {
+      "get": {
+        "tags": ["URL"],
+        "summary": "Redirecionar para URL original",
+        "description": "Redireciona para a URL original a partir de um link encurtado.",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do link encurtado",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Redirecionamento para URL original",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "link_encurtado": {
+                  "type": "string",
+                  "description": "Link encurtado solicitado"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Link não encontrado",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Descrição do erro"
                 }
               }
             }
@@ -83,3 +221,4 @@
       }
     }
   }
+}
