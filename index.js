@@ -64,13 +64,23 @@ app.get('/users/:email', (req, res) => {
   }
 });
 
-app.get('/url/:id', (req, res) => {
+app.get('/url/get/:id', (req, res) => {
   const id = req.params.id;
   const link = links.find(l => l.id === id);
   if (!link) {
     res.status(404).json({ error: 'Link não encontrado' });
   } else {
     res.status(200).json({link_encurtado: `http://localhost:3000/url/${id}`})
+  }
+});
+
+app.get('/url/:id', (req, res) => {
+  const id = req.params.id;
+  const link = links.find(l => l.id === id);
+  if (!link) {
+    res.status(404).json({ error: 'Link não encontrado' });
+  } else {
+    res.redirect(link.link)
   }
 });
 
